@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp19
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Random rnd = new Random();
+            bool isdifvalid = false;// makes sure the difficulty inputted is a valid option
+
+            char dif = 'z';//goverens the difficuly
+            int lottolength = 0, i = 0;// lotto length is the amount of numbers chosen by both the RNG and the user, 9 on easy, 6 on normal, 3 on hard
+            while (isdifvalid == false)//start of difficulty selection
+            {
+                Console.WriteLine("please choose a difficulty. (e for easy, n for normal, h for hard)");
+                isdifvalid =  char.TryParse(Console.ReadLine(), out dif);
+
+                switch (dif)
+                {
+                    case ('e'):
+                    case ('E'):
+                        lottolength = 9;
+                        Console.WriteLine("you have chosen easy difficulty.");
+                        isdifvalid = true;
+                        break;
+                    case ('n'):
+                    case ('N'):
+                        lottolength = 6;
+                        Console.WriteLine("you have chosen normal difficulty.");
+                        isdifvalid = true;
+                        break;
+                    case ('h'):
+                    case ('H'):
+                        lottolength = 3;
+                        Console.WriteLine("you have chosen hard difficulty.");
+                        isdifvalid = true;
+                        break;
+                    default:
+                        Console.WriteLine("invalid difficulty choice.");
+                        break;
+                }
+            }
+            int[] lottonums = new int[lottolength];// the array containing the randomly generated numbers
+            int buf;
+            while (i < lottolength)
+            {
+                    buf = rnd.Next(1, 47);
+                    if (!(lottonums.Contains(buf)))
+                    {
+                    lottonums[i] = buf;
+                    i++;
+                    }
+                
+               
+            }
+            bool isvalid = false;//makes sure the inputted numbers by the user are valid
+            int[] usernums = new int[lottolength];// the array containing the user's chosen numbers
+            i = 0;
+             while (i < lottolength)
+             {
+                isvalid = false;
+                while (!isvalid)
+                {
+                    Console.WriteLine("please input number {0}",i+1);
+                    isvalid = int.TryParse(Console.ReadLine(), out usernums[i]);
+                    if ((!isvalid)||(usernums[i]<1)||(usernums[i]>46))
+                    {
+                        Console.WriteLine("invalid input, please enter a natural number between 1 and 46");
+                    }
+                }
+                i++;
+             }
+            i = 0;
+            int j = 0;
+            int hits = 0;//how many numbers the user got right
+            while (i < lottolength)
+            {
+                while (j < lottolength)
+                {
+                    if(lottonums[i] == usernums[j])
+                    {
+                        hits++;
+                    }
+                    j++;
+                }
+                i++;
+            }
+            if (hits == 1)
+            {
+                Console.WriteLine("GRATZ! YOU GOT A HIT");
+            }
+            else if (hits > 0)
+            {
+                Console.WriteLine("GRATZ! YOU GOT {0} HITS!", hits);
+            }
+            else
+            {
+                Console.WriteLine("You got no hits :(");
+            }
+            Console.WriteLine("the numbers genereated were:");
+            i = 0;
+            while (i < lottolength)
+            {
+                Console.Write("{0},",lottonums[i]);
+                i++;
+            }
+            Console.ReadLine();
+        }
+    }
+}
