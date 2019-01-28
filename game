@@ -46,7 +46,7 @@ namespace ConsoleApp19
                 }
             }
             int[] lottonums = new int[lottolength];// the array containing the randomly generated numbers
-            int buf;
+            int buf = 0;
             while (i < lottolength)
             {
                     buf = rnd.Next(1, 47);
@@ -61,18 +61,21 @@ namespace ConsoleApp19
             bool isvalid = false;//makes sure the inputted numbers by the user are valid
             int[] usernums = new int[lottolength];// the array containing the user's chosen numbers
             i = 0;
+            buf = 0;
              while (i < lottolength)
              {
                 isvalid = false;
-                while (!isvalid)
-                {
+
                     Console.WriteLine("please input number {0}",i+1);
-                    isvalid = int.TryParse(Console.ReadLine(), out usernums[i]);
-                    if ((!isvalid)||(usernums[i]<1)||(usernums[i]>46))
+                    isvalid = int.TryParse(Console.ReadLine(), out buf);
+                    if ((!isvalid)||(buf<1)||(buf>46))
                     {
-                        Console.WriteLine("invalid input, please enter a natural number between 1 and 46");
+                    if (!usernums.Contains(buf))
+                        {
+                            Console.WriteLine("invalid input, please enter a natural number between 1 and 46 that you haven't inputted already");
+                            i--;
+                        }
                     }
-                }
                 i++;
              }
             i = 0;
@@ -80,6 +83,7 @@ namespace ConsoleApp19
             int hits = 0;//how many numbers the user got right
             while (i < lottolength)
             {
+                j = 0;
                 while (j < lottolength)
                 {
                     if(lottonums[i] == usernums[j])
