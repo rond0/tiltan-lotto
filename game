@@ -42,6 +42,7 @@ namespace ConsoleApp19
                         break;
                     default:
                         Console.WriteLine("invalid difficulty choice.");
+                        isdifvalid = false;
                         break;
                 }
             }
@@ -68,15 +69,22 @@ namespace ConsoleApp19
 
                     Console.WriteLine("please input number {0}",i+1);
                     isvalid = int.TryParse(Console.ReadLine(), out buf);
-                    if ((!isvalid)||(buf<1)||(buf>46))
+                    if ((isvalid)&&!(buf<1)&&!(buf>46))
                     {
-                    if (!usernums.Contains(buf))
-                        {
-                            Console.WriteLine("invalid input, please enter a natural number between 1 and 46 that you haven't inputted already");
-                            i--;
-                        }
+                      if (!usernums.Contains(buf))
+                      {
+                        usernums[i] = buf;
+                        i++;
+                      }
+                      else
+                      {
+                            Console.WriteLine("you already inputted that number, please enter a number you haven't inputted before");
+                      }
                     }
-                i++;
+                    else
+                    {
+                    Console.WriteLine("invalid input, please enter a number between 1 and 46");
+                    }
              }
             i = 0;
             int j = 0;
