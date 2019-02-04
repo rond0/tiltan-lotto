@@ -1,191 +1,187 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ConsoleApp19
 {
     class Program
     {
-        static void Main(string[] args)
+        static int difficultychoice()
+        {
+            bool isdifvalid = false;// makes sure the difficulty inputted is a valid option
+
+            char dif = 'z';//goverens the difficuly
+            int lottolength = 0, i = 0;// lotto length is the amount of numbers chosen by both the RNG and the user, 9 on easy, 6 on normal, 3 on hard
+            while (isdifvalid == false)//start of difficulty selection
+            {
+                Console.WriteLine("please choose a difficulty. (e for easy, n for normal, h for hard)");
+                isdifvalid = char.TryParse(Console.ReadLine(), out dif);
+
+                switch (dif)
+                {
+                    case ('e'):
+                    case ('E'):
+                        lottolength = 9;
+                        Console.WriteLine("you have chosen easy difficulty.");
+                        isdifvalid = true;
+                        break;
+                    case ('n'):
+                    case ('N'):
+                        lottolength = 6;
+                        Console.WriteLine("you have chosen normal difficulty.");
+                        isdifvalid = true;
+                        break;
+                    case ('h'):
+                    case ('H'):
+                        lottolength = 3;
+                        Console.WriteLine("you have chosen hard difficulty.");
+                        isdifvalid = true;
+                        break;
+                    default:
+                        Console.WriteLine("invalid difficulty choice.");
+                        isdifvalid = false;
+                        break;
+                }
+            }
+            return lottolength;
+        }
+        static int[] GenerateRandomNumbers(int lottolength, Random rnd)
+        {
+            int i = 0;
+            int[] lottonums = new int[lottolength];// the array containing the randomly generated numbers
+            int buf = 0;
+            while (i < lottolength)
+            {
+                buf = rnd.Next(1, 47);
+                if (!(lottonums.Contains(buf)))
+                {
+                    lottonums[i] = buf;
+                    i++;
+                }
+            }
+            return lottonums;
+        }
+        static int[] userselectsnumbers(int lottolength)
+        {
+            bool isvalid = false;//makes sure the inputted numbers by the user are valid
+            int[] usernums = new int[lottolength];// the array containing the user's chosen numbers
+            int i = 0, buf = 0;//buffer;
+            while (i < lottolength)//start of user inputting numbers
+            {
+                isvalid = false;
+
+                Console.WriteLine("please input number {0}", i + 1);
+                isvalid = int.TryParse(Console.ReadLine(), out buf);
+                if ((isvalid) && !(buf < 1) && !(buf > 46))
+                {
+                    if (!usernums.Contains(buf))
+                    {
+                        usernums[i] = buf;
+                        i++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("you already inputted that number, please enter a number you haven't inputted before");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("invalid input, please enter a number between 1 and 46");
+                }
+            }
+            return usernums;
+        }
+        static int checkforhits(int lottolength, int[] lottonums, int[] usernums)
+        {
+            int i = 0, j = 0,
+                hits = 0;//how many numbers the user got rightcolor//decides color
+
+            while (i < lottolength)//checks how many numbers the user got right
+            {
+                j = 0;
+                while (j < lottolength)
+                {
+                    if (lottonums[i] == usernums[j])
+                    {
+                        hits++;
+                    }
+                    j++;
+                }
+                i++;
+            }
+            return hits;
+        }
+        static void displayresult(int hits, Random rnd)
+        {
+            ConsoleColor ar =[ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Red, ConsoleColor.DarkBlue, ConsoleColor.DarkCyan, ConsoleColor.Magenta, ConsoleColor.Yellow, ConsoleColor.DarkMagenta, ConsoleColor.DarkRed, ConsoleColor.DarkYellow];
+            int timer = 0;
+            if (hits == 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("GRATZ! YOU GOT A HIT");
+                Console.ResetColor();
+            }
+            else if (hits > 0)
+            {
+                while (timer < 15000)//start of the number flashing color
+                {
+                    int color = rnd.Next(0, 10);
+                            Console.ForegroundColor = ConsoleColor ar[1];
+                
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
+                    timer++;
+                    Console.WriteLine("GRATZ! YOU GOT {0} HITS!", hits);
+                }
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You got no hits :(");
+            }
+            Console.ResetColor();
+        }
+
+        static bool ShouldRepeat()
+        {
+            char repeatcheck;
+            Console.WriteLine("");
+            Console.WriteLine("another round?(input y to accept)");
+            bool repeat = char.TryParse(Console.ReadLine(), out repeatcheck);
+            if (repeatcheck == 'y' || repeatcheck == 'Y')
+            {
+                repeat = false;
+            }
+            else
+            {
+                repeat = true;
+            }
+            return repeat;
+        }
+        
+
+
+static void Main(string[] args)
         {
             bool repeat = false;
             while (!repeat)
             {
                 Random rnd = new Random();
-                bool isdifvalid = false;// makes sure the difficulty inputted is a valid option
 
-                char dif = 'z';//goverens the difficuly
-                int lottolength = 0, i = 0;// lotto length is the amount of numbers chosen by both the RNG and the user, 9 on easy, 6 on normal, 3 on hard
-                while (isdifvalid == false)//start of difficulty selection
-                {
-                    Console.WriteLine("please choose a difficulty. (e for easy, n for normal, h for hard)");
-                    isdifvalid = char.TryParse(Console.ReadLine(), out dif);
+               int lottolength = difficultychoice(),i = 0;
 
-                    switch (dif)
-                    {
-                        case ('e'):
-                        case ('E'):
-                            lottolength = 9;
-                            Console.WriteLine("you have chosen easy difficulty.");
-                            isdifvalid = true;
-                            break;
-                        case ('n'):
-                        case ('N'):
-                            lottolength = 6;
-                            Console.WriteLine("you have chosen normal difficulty.");
-                            isdifvalid = true;
-                            break;
-                        case ('h'):
-                        case ('H'):
-                            lottolength = 3;
-                            Console.WriteLine("you have chosen hard difficulty.");
-                            isdifvalid = true;
-                            break;
-                        default:
-                            Console.WriteLine("invalid difficulty choice.");
-                            isdifvalid = false;
-                            break;
-                    }
-                }
-                int[] lottonums = new int[lottolength];// the array containing the randomly generated numbers
-                int buf = 0;
-                while (i < lottolength)
-                {
-                    buf = rnd.Next(1, 47);
-                    if (!(lottonums.Contains(buf)))
-                    {
-                        lottonums[i] = buf;
-                        i++;
-                    }
-
-
-                }
-                bool isvalid = false;//makes sure the inputted numbers by the user are valid
-                int[] usernums = new int[lottolength];// the array containing the user's chosen numbers
-                i = 0;
-                buf = 0;//buffer
-                while (i < lottolength)//start of user inputting numbers
-                {
-                    isvalid = false;
-
-                    Console.WriteLine("please input number {0}", i + 1);
-                    isvalid = int.TryParse(Console.ReadLine(), out buf);
-                    if ((isvalid) && !(buf < 1) && !(buf > 46))
-                    {
-                        if (!usernums.Contains(buf))
-                        {
-                            usernums[i] = buf;
-                            i++;
-                        }
-                        else
-                        {
-                            Console.WriteLine("you already inputted that number, please enter a number you haven't inputted before");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("invalid input, please enter a number between 1 and 46");
-                    }
-                }
-                i = 0;
-                int j = 0;
-                int hits = 0;//how many numbers the user got right
-                int col;//decides color
-                int timer = 0;
-                while (i < lottolength)//checks how many numbers the user got right
-                {
-                    j = 0;
-                    while (j < lottolength)
-                    {
-                        if (lottonums[i] == usernums[j])
-                        {
-                            hits++;
-                        }
-                        j++;
-                    }
-                    i++;
-                }
-                if (hits == 1)
-                {
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine("GRATZ! YOU GOT A HIT");
-                    Console.ResetColor();
-                }
-                else if (hits > 0)
-                {
-                    while (timer < 15000)//start of the number flashing color
-                    {
-                        col = rnd.Next(1, 11);
-                        switch (col)
-                        {
-                            case (1):
-                                Console.ForegroundColor = ConsoleColor.Blue;
-                                break;
-                            case (2):
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                break;
-                            case (3):
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                break;
-                            case (4):
-                                Console.ForegroundColor = ConsoleColor.Magenta;
-                                break;
-                            case (5):
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                                break;
-                            case (6):
-                                Console.ForegroundColor = ConsoleColor.White;
-                                break;
-                            case (7):
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                break;
-                            case (8):
-                                Console.ForegroundColor = ConsoleColor.DarkCyan;
-                                break;
-                            case (9):
-                                Console.ForegroundColor = ConsoleColor.DarkRed;
-                                break;
-                            case (10):
-                                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                                break;
-
-
-                        }
-                        Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
-                        timer++;
-                        Console.WriteLine("GRATZ! YOU GOT {0} HITS!", hits);
-                    }
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You got no hits :(");
-                }
-                Console.ResetColor();
-                Console.WriteLine("the numbers genereated were:");
+               int[] lottonums = GenerateRandomNumbers(lottolength, rnd);
+               int[] usernums = userselectsnumbers(lottolength);
+               int hits = checkforhits(lottolength, lottonums, usernums);
+                displayresult(hits, rnd);
+                
+                Console.WriteLine("the numbers genereated were:");// display the randomly generated numbers
                 i = 0;
                 while (i < lottolength)
                 {
                     Console.Write("{0},", lottonums[i]);
                     i++;
                 }
-                char repeatcheck;
-                Console.WriteLine("");
-                Console.WriteLine("another round?(input y to accept)");
-                repeat = char.TryParse(Console.ReadLine(), out repeatcheck);
-                if(repeatcheck == 'y'||repeatcheck == 'Y')
-                {
-                    repeat = false;
-                }
-                else
-                {
-                    repeat = true;
-                }
-            }
-           
 
+                repeat = ShouldRepeat();
+            }
         }
     }
 }
