@@ -4,12 +4,12 @@ namespace ConsoleApp19
 {
     class Program
     {
-        static int difficultychoice()
+        static int DifficultyChoice()
         {
             bool isdifvalid = false;// makes sure the difficulty inputted is a valid option
 
             char dif = 'z';//goverens the difficuly
-            int lottolength = 0, i = 0;// lotto length is the amount of numbers chosen by both the RNG and the user, 9 on easy, 6 on normal, 3 on hard
+            int lottolength = 0;// lotto length is the amount of numbers chosen by both the RNG and the user, 9 on easy, 6 on normal, 3 on hard
             while (isdifvalid == false)//start of difficulty selection
             {
                 Console.WriteLine("please choose a difficulty. (e for easy, n for normal, h for hard)");
@@ -59,7 +59,7 @@ namespace ConsoleApp19
             }
             return lottonums;
         }
-        static int[] userselectsnumbers(int lottolength)
+        static int[] UsersSelectsNumbers(int lottolength)
         {
             bool isvalid = false;//makes sure the inputted numbers by the user are valid
             int[] usernums = new int[lottolength];// the array containing the user's chosen numbers
@@ -89,7 +89,7 @@ namespace ConsoleApp19
             }
             return usernums;
         }
-        static int checkforhits(int lottolength, int[] lottonums, int[] usernums)
+        static int CheckForHits(int lottolength, int[] lottonums, int[] usernums)
         {
             int i = 0, j = 0,
                 hits = 0;//how many numbers the user got rightcolor//decides color
@@ -109,9 +109,12 @@ namespace ConsoleApp19
             }
             return hits;
         }
-        static void displayresult(int hits, Random rnd)
+        static void DisplayResult(int hits, Random rnd)
         {
-            ConsoleColor ar =[ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Red, ConsoleColor.DarkBlue, ConsoleColor.DarkCyan, ConsoleColor.Magenta, ConsoleColor.Yellow, ConsoleColor.DarkMagenta, ConsoleColor.DarkRed, ConsoleColor.DarkYellow];
+            //ConsoleColor ar[] =[ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Red, ConsoleColor.DarkBlue, ConsoleColor.DarkCyan, ConsoleColor.Magenta, ConsoleColor.Yellow, ConsoleColor.DarkMagenta, ConsoleColor.DarkRed, ConsoleColor.DarkYellow];
+            String[] colorNames = ConsoleColor.GetNames(typeof(ConsoleColor));
+            int numColors = colorNames.Length;
+            string[] x = new string[] { "", "", "" };
             int timer = 0;
             if (hits == 1)
             {
@@ -123,9 +126,10 @@ namespace ConsoleApp19
             {
                 while (timer < 15000)//start of the number flashing color
                 {
-                    int color = rnd.Next(0, 10);
-                            Console.ForegroundColor = ConsoleColor ar[1];
-                
+                    string colorName = colorNames[rnd.Next(numColors)];
+                    ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), colorName);
+                    Console.ForegroundColor = color;
+
                     Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
                     timer++;
                     Console.WriteLine("GRATZ! YOU GOT {0} HITS!", hits);
@@ -138,7 +142,6 @@ namespace ConsoleApp19
             }
             Console.ResetColor();
         }
-
         static bool ShouldRepeat()
         {
             char repeatcheck;
@@ -155,31 +158,27 @@ namespace ConsoleApp19
             }
             return repeat;
         }
-        
-
-
-static void Main(string[] args)
+        static void DisplayChosenNumbers(int lottolength,int[] lottonums)
+        {
+            Console.WriteLine("the numbers genereated were:");// display the randomly generated numbers
+            int i = 0;
+            while (i < lottolength)
+            {
+                Console.Write("{0},", lottonums[i]);
+                i++;
+            }
+        }
+        static void Main(string[] args)
         {
             bool repeat = false;
             while (!repeat)
             {
                 Random rnd = new Random();
-
-               int lottolength = difficultychoice(),i = 0;
-
-               int[] lottonums = GenerateRandomNumbers(lottolength, rnd);
-               int[] usernums = userselectsnumbers(lottolength);
-               int hits = checkforhits(lottolength, lottonums, usernums);
-                displayresult(hits, rnd);
-                
-                Console.WriteLine("the numbers genereated were:");// display the randomly generated numbers
-                i = 0;
-                while (i < lottolength)
-                {
-                    Console.Write("{0},", lottonums[i]);
-                    i++;
-                }
-
+                int lottolength = DifficultyChoice();
+                int[] lottonums = GenerateRandomNumbers(lottolength, rnd);
+                int[] usernums = UsersSelectsNumbers(lottolength);
+                int hits = CheckForHits(lottolength, lottonums, usernums);
+                DisplayResult(hits, rnd);
                 repeat = ShouldRepeat();
             }
         }
