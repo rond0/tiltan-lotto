@@ -12,7 +12,7 @@ namespace ConsoleApp19
             int lottolength = 0;// lotto length is the amount of numbers chosen by both the RNG and the user, 9 on easy, 6 on normal, 3 on hard
             while (isdifvalid == false)//start of difficulty selection
             {
-                Console.WriteLine("please choose a difficulty. (e for easy, n for normal, h for hard)");
+                Console.WriteLine("Please select a difficulty. (e for easy, n for normal, h for hard)");
                 isdifvalid = char.TryParse(Console.ReadLine(), out dif);
 
                 switch (dif)
@@ -20,23 +20,31 @@ namespace ConsoleApp19
                     case ('e'):
                     case ('E'):
                         lottolength = 9;
-                        Console.WriteLine("you have chosen easy difficulty.");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("You have selected easy difficulty.");
+                        Console.ResetColor();
                         isdifvalid = true;
                         break;
                     case ('n'):
                     case ('N'):
                         lottolength = 6;
-                        Console.WriteLine("you have chosen normal difficulty.");
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("You have selected normal difficulty.");
+                        Console.ResetColor();
                         isdifvalid = true;
                         break;
                     case ('h'):
                     case ('H'):
                         lottolength = 3;
-                        Console.WriteLine("you have chosen hard difficulty.");
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine("You have selected hard difficulty.");
+                        Console.ResetColor();
                         isdifvalid = true;
                         break;
                     default:
-                        Console.WriteLine("invalid difficulty choice.");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Invalid difficulty choice.");
+                        Console.ResetColor();
                         isdifvalid = false;
                         break;
                 }
@@ -68,7 +76,7 @@ namespace ConsoleApp19
             {
                 isvalid = false;
 
-                Console.WriteLine("please input number {0}", i + 1);
+                Console.WriteLine("Please input number {0} of {1}", i + 1,lottolength);
                 isvalid = int.TryParse(Console.ReadLine(), out buf);
                 if ((isvalid) && !(buf < 1) && !(buf > 46))
                 {
@@ -79,12 +87,16 @@ namespace ConsoleApp19
                     }
                     else
                     {
-                        Console.WriteLine("you already inputted that number, please enter a number you haven't inputted before");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("You already inputted that number, please enter a number you haven't inputted before");
+                        Console.ResetColor();
                     }
                 }
                 else
                 {
-                    Console.WriteLine("invalid input, please enter a number between 1 and 46");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid input, please enter an integer between 1 and 46");
+                    Console.ResetColor();
                 }
             }
             return usernums;
@@ -108,13 +120,12 @@ namespace ConsoleApp19
                 i++;
             }
             return hits;
-        }
+        }//compares the numbers the user selected to the numbers the computer generated to check for correct guesses
         static void DisplayResult(int hits, Random rnd)
         {
             //ConsoleColor ar[] =[ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Red, ConsoleColor.DarkBlue, ConsoleColor.DarkCyan, ConsoleColor.Magenta, ConsoleColor.Yellow, ConsoleColor.DarkMagenta, ConsoleColor.DarkRed, ConsoleColor.DarkYellow];
             String[] colorNames = ConsoleColor.GetNames(typeof(ConsoleColor));
             int numColors = colorNames.Length;
-            string[] x = new string[] { "", "", "" };
             int timer = 0;
             if (hits == 1)
             {
@@ -157,8 +168,8 @@ namespace ConsoleApp19
                 repeat = true;
             }
             return repeat;
-        }
-        static void DisplayChosenNumbers(int lottolength,int[] lottonums)
+        }//asks the if he wants to play again
+        static void DisplayGeneratedNumbers(int lottolength,int[] lottonums)
         {
             Console.WriteLine("the numbers genereated were:");// display the randomly generated numbers
             int i = 0;
@@ -179,6 +190,7 @@ namespace ConsoleApp19
                 int[] usernums = UsersSelectsNumbers(lottolength);
                 int hits = CheckForHits(lottolength, lottonums, usernums);
                 DisplayResult(hits, rnd);
+                DisplayGeneratedNumbers(lottolength, lottonums);
                 repeat = ShouldRepeat();
             }
         }
